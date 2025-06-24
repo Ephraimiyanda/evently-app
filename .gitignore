@@ -3,6 +3,7 @@ node_modules/
 
 # expo
 .expo/
+.bolt/
 dist/
 web-build/
 expo-env.d.ts

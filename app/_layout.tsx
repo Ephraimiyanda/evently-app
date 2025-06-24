@@ -7,7 +7,6 @@ import {
   Inter_600SemiBold,
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
-import * as SplashScreen from 'expo-splash-screen';
 import { AuthWrapper } from '@/components/auth/authWrapper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Drawer from 'expo-router/drawer';
@@ -15,11 +14,13 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { HelpCircle, Home, LogOut, Settings, User } from 'lucide-react-native';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
 import { SearchModalContextProvider } from '@/contexts/searchModalContext';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  SplashScreen.preventAutoHideAsync();
   useFrameworkReady();
   const { signOut, user } = useAuth();
   const { profile } = useProfile();
@@ -129,6 +130,7 @@ export default function RootLayout() {
     <AuthWrapper>
       <SearchModalContextProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
+          <StatusBar backgroundColor={'#ffffff'} />
           <Drawer
             screenOptions={{ headerShown: false }}
             drawerContent={(props) => <CustomDrawerContent {...props} />}

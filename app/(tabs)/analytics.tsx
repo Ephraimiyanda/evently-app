@@ -134,7 +134,7 @@ export default function AnalyticsScreen() {
       {/* Header */}
       <View className="bg-gray-50 mt-4 px-4 ">
         {/* Period Selector */}
-        <View className="flex-row space-x-2">
+        <View className="flex-row space-x-2 py-2">
           {[
             { key: 'week', label: 'This Week' },
             { key: 'month', label: 'This Month' },
