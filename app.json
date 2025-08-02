@@ -15,12 +15,12 @@
         "policy": "appVersion"
       }
     },
-
     "android": {
       "icon": "./assets/images/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png"
       },
+      "edgeToEdgeEnabled": true,
       "package": "com.evently.app",
       "runtimeVersion": "1.0.0"
     },
@@ -51,7 +51,8 @@
         {
           "launchMode": "most-recent"
         }
-      ]
+      ],
+      "expo-mail-composer"
     ],
     "experiments": {
       "typedRoutes": true

@@ -7,11 +7,7 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-import { Plus, Search, Filter } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTasks } from '@/hooks/useTasks';
 import { TaskCard } from '@/components/cards/TaskCard';
 import { FloatingActionButton } from '@/components/buttons/FloatingActionButton';
@@ -23,14 +19,17 @@ import {
 } from '@/components/loaders/loadingSpinner';
 import { Task } from '@/types';
 import { SearchModalContext } from '@/contexts/searchModalContext';
+import { ConfirmationModal } from '@/components/modals/confirmationModal';
 
 export default function TasksScreen() {
-  const { tasks, loading, createTask, updateTask, refetch } = useTasks();
+  const { tasks, loading, deleteTask, createTask, updateTask, refetch } =
+    useTasks();
   const [refreshing, setRefreshing] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const insets = useSafeAreaInsets();
-  const { OnClose, searchModalVisible, setSearchModalVisible } =
-    useContext(SearchModalContext);
+  const { OnClose, searchModalVisible } = useContext(SearchModalContext);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -59,6 +58,21 @@ export default function TasksScreen() {
     }
   };
 
+  const handleTaskDelete = (task: Task) => {
+    setSelectedTask(task);
+    setDeleteConfirmVisible(true);
+  };
+
+  const confirmTaskDelete = async () => {
+    if (selectedTask) {
+      try {
+        await deleteTask(selectedTask.id);
+      } catch (error) {
+        console.error('Failed to delete task:', error);
+      }
+    }
+  };
+
   const handleTaskPress = (task: Task) => {
     console.log('Task pressed:', task.title);
   };
@@ -70,7 +84,7 @@ export default function TasksScreen() {
   return (
     <View
       style={{
-        paddingBottom: Platform.OS === 'ios' ? insets.bottom : 0,
+        paddingBottom: Platform.OS === 'ios' ? insets.bottom : 12,
         paddingTop: Platform.OS === 'ios' ? insets.top : 12,
       }}
       className="flex-1 bg-gray-50"
@@ -130,6 +144,7 @@ export default function TasksScreen() {
                 task={task}
                 onPress={() => handleTaskPress(task)}
                 onStatusChange={handleTaskStatusChange}
+                onDelete={() => handleTaskDelete(task)}
               />
             ))
           )}
@@ -153,6 +168,17 @@ export default function TasksScreen() {
           onItemPress={handleSearchItemPress}
         />
       </View>
+
+      {/* Delete Confirmation */}
+      <ConfirmationModal
+        visible={deleteConfirmVisible}
+        onClose={() => setDeleteConfirmVisible(false)}
+        onConfirm={confirmTaskDelete}
+        title="Delete Task"
+        message={`Are you sure you want to delete "${selectedTask?.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        confirmColor="bg-error-500"
+      />
     </View>
   );
 }

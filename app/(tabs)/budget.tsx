@@ -71,7 +71,7 @@ export default function BudgetScreen() {
     <View
       className="flex-1 bg-gray-50"
       style={{
-        paddingBottom: Platform.OS === 'ios' ? insets.bottom : 0,
+        paddingBottom: Platform.OS === 'ios' ? insets.bottom : 12,
         paddingTop: Platform.OS === 'ios' ? insets.top : 12,
       }}
     >
@@ -212,7 +212,6 @@ export default function BudgetScreen() {
         visible={addModalVisible}
         onClose={() => setAddModalVisible(false)}
         onSubmit={handleCreateExpense}
-        eventId="" // You might want to pass a specific event ID or make it optional
       />
       <SearchModal
         visible={searchModalVisible}

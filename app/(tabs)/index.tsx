@@ -17,15 +17,21 @@ import { SearchModal } from '@/components/modals/searchModal';
 import { InlineLoadingSpinner } from '@/components/loaders/loadingSpinner';
 import { Event, Task, Guest, Expense } from '@/types';
 import { SearchModalContext } from '@/contexts/searchModalContext';
+import { router } from 'expo-router';
+import { OptionsDrawer } from '@/components/modals/optionDrawer';
+import { ConfirmationModal } from '@/components/modals/confirmationModal';
 
 export default function HomeScreen() {
   const {
     events,
     loading: eventsLoading,
     createEvent,
+    deleteEvent,
     refetch: refetchEvents,
   } = useEvents();
-
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [optionsDrawerVisible, setOptionsDrawerVisible] = useState(false);
+  const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [addEventModalVisible, setAddEventModalVisible] = useState(false);
   const insets = useSafeAreaInsets();
@@ -52,6 +58,30 @@ export default function HomeScreen() {
     }
   };
 
+  const handleEventOptions = (event: Event) => {
+    setSelectedEvent(event);
+    setOptionsDrawerVisible(true);
+  };
+
+  const handleEventEdit = () => {
+    if (selectedEvent) {
+      router.push(`/event-details/${selectedEvent.id}`);
+    }
+  };
+
+  const handleEventDelete = () => {
+    setDeleteConfirmVisible(true);
+  };
+
+  const confirmEventDelete = async () => {
+    if (selectedEvent) {
+      try {
+        await deleteEvent(selectedEvent.id);
+      } catch (error) {
+        console.error('Failed to delete event:', error);
+      }
+    }
+  };
   const handleSearchItemPress = (item: Event | Task | Guest | Expense) => {
     setSearchModalVisible(false);
     // Handle item press based on type
@@ -67,7 +97,7 @@ export default function HomeScreen() {
     <View
       className="flex-1 bg-gray-50"
       style={{
-        paddingBottom: Platform.OS === 'ios' ? insets.bottom : 0,
+        paddingBottom: Platform.OS === 'ios' ? insets.bottom : 12,
         paddingTop: Platform.OS === 'ios' ? insets.top : 12,
       }}
     >
@@ -130,7 +160,8 @@ export default function HomeScreen() {
               <EventCard
                 key={event.id}
                 event={event}
-                onPress={() => console.log('Event pressed:', event.name)}
+                onPress={() => router.push(`/event-details/${event.id}`)}
+                onOptionsPress={() => handleEventOptions(event)}
               />
             ))
           )}
@@ -153,6 +184,25 @@ export default function HomeScreen() {
         type={'events'}
         data={events}
         onItemPress={handleSearchItemPress}
+      />
+      {/* Options Drawer */}
+      <OptionsDrawer
+        visible={optionsDrawerVisible}
+        onClose={() => setOptionsDrawerVisible(false)}
+        onEdit={handleEventEdit}
+        onDelete={handleEventDelete}
+        title="Event Options"
+      />
+
+      {/* Delete Confirmation */}
+      <ConfirmationModal
+        visible={deleteConfirmVisible}
+        onClose={() => setDeleteConfirmVisible(false)}
+        onConfirm={confirmEventDelete}
+        title="Delete Event"
+        message={`Are you sure you want to delete "${selectedEvent?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        confirmColor="bg-error-500"
       />
     </View>
   );

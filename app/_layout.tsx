@@ -136,6 +136,7 @@ export default function RootLayout() {
             drawerContent={(props) => <CustomDrawerContent {...props} />}
           >
             <Drawer.Screen name="(tabs)" />
+            <Drawer.Screen name="event-details" />
             <Drawer.Screen name="+not-found" />
           </Drawer>
         </GestureHandlerRootView>

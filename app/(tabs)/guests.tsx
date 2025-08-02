@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Search, Filter, Mail, MessageSquare } from 'lucide-react-native';
+import { Mail, MessageSquare } from 'lucide-react-native';
 import { useGuests } from '@/hooks/useGuests';
 import { GuestCard } from '@/components/cards/GuestCard';
 import { FloatingActionButton } from '@/components/buttons/FloatingActionButton';
@@ -19,12 +19,11 @@ import { AddGuestModal } from '@/components/modals/addGuestModal';
 import { SearchModalContext } from '@/contexts/searchModalContext';
 
 export default function GuestsScreen() {
-  const { guests, loading, createGuest, sendInvitation, refetch } = useGuests();
+  const { guests, loading, createGuest, refetch } = useGuests();
   const [refreshing, setRefreshing] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const insets = useSafeAreaInsets();
-  const { OnClose, searchModalVisible, setSearchModalVisible } =
-    useContext(SearchModalContext);
+  const { OnClose, searchModalVisible } = useContext(SearchModalContext);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -61,11 +60,12 @@ export default function GuestsScreen() {
   };
 
   const stats = getRsvpStats();
+
   return (
     <View
       className="flex-1 bg-gray-50"
       style={{
-        paddingBottom: Platform.OS === 'ios' ? insets.bottom : 0,
+        paddingBottom: Platform.OS === 'ios' ? insets.bottom : 12,
         paddingTop: Platform.OS === 'ios' ? insets.top : 12,
       }}
     >

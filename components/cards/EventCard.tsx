@@ -1,21 +1,34 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { Calendar, MapPin, Users, DollarSign } from 'lucide-react-native';
+import {
+  Calendar,
+  MapPin,
+  Users,
+  DollarSign,
+  MoreVertical,
+} from 'lucide-react-native';
+import { router } from 'expo-router';
 import { Event } from '@/types';
 
 interface EventCardProps {
   event: Event;
   onPress: () => void;
+  onOptionsPress?: () => void;
 }
 
-export function EventCard({ event, onPress }: EventCardProps) {
+export function EventCard({ event, onPress, onOptionsPress }: EventCardProps) {
   const getStatusColor = (status: Event['status']) => {
     switch (status) {
-      case 'planning': return 'bg-warning-100 text-warning-800';
-      case 'active': return 'bg-success-100 text-success-800';
-      case 'completed': return 'bg-gray-100 text-gray-800';
-      case 'cancelled': return 'bg-error-100 text-error-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'planning':
+        return 'bg-warning-100 text-warning-800';
+      case 'active':
+        return 'bg-success-100 text-success-800';
+      case 'completed':
+        return 'bg-gray-100 text-gray-800';
+      case 'cancelled':
+        return 'bg-error-100 text-error-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -29,7 +42,7 @@ export function EventCard({ event, onPress }: EventCardProps) {
 
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={() => router.push(`/event-details/${event.id}`)}
       className="bg-white rounded-xl shadow-sm border border-gray-100 mb-4 overflow-hidden"
     >
       {event.coverImage && (
@@ -39,20 +52,34 @@ export function EventCard({ event, onPress }: EventCardProps) {
           resizeMode="cover"
         />
       )}
-      
+
       <View className="p-4">
         <View className="flex-row justify-between items-start mb-2">
           <Text className="text-lg font-inter-semibold text-gray-900 flex-1 mr-2">
             {event.name}
           </Text>
-          <View className={`px-2 py-1 rounded-full ${getStatusColor(event.status)}`}>
-            <Text className="text-xs font-inter-medium capitalize">
-              {event.status}
-            </Text>
+          <View className="flex-row items-center space-x-2">
+            <View
+              className={`px-2 py-1 rounded-full ${getStatusColor(
+                event.status
+              )}`}
+            >
+              <Text className="text-xs font-inter-medium capitalize">
+                {event.status}
+              </Text>
+            </View>
+            {onOptionsPress && (
+              <TouchableOpacity onPress={onOptionsPress}>
+                <MoreVertical size={20} color="#6b7280" />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
-        <Text className="text-gray-600 font-inter text-sm mb-3" numberOfLines={2}>
+        <Text
+          className="text-gray-600 font-inter text-sm mb-3"
+          numberOfLines={2}
+        >
           {event.description}
         </Text>
 
@@ -66,7 +93,10 @@ export function EventCard({ event, onPress }: EventCardProps) {
 
           <View className="flex-row items-center">
             <MapPin size={16} color="#6b7280" />
-            <Text className="text-gray-600 font-inter text-sm ml-2 flex-1" numberOfLines={1}>
+            <Text
+              className="text-gray-600 font-inter text-sm ml-2 flex-1"
+              numberOfLines={1}
+            >
               {event.location}
             </Text>
           </View>
@@ -78,15 +108,25 @@ export function EventCard({ event, onPress }: EventCardProps) {
                 Budget: ${event.budget.toLocaleString()}
               </Text>
             </View>
-            
-            <View className={`px-2 py-1 rounded-full ${
-              event.type === 'physical' ? 'bg-blue-100' :
-              event.type === 'virtual' ? 'bg-purple-100' : 'bg-green-100'
-            }`}>
-              <Text className={`text-xs font-inter-medium ${
-                event.type === 'physical' ? 'text-blue-800' :
-                event.type === 'virtual' ? 'text-purple-800' : 'text-green-800'
-              }`}>
+
+            <View
+              className={`px-2 py-1 rounded-full ${
+                event.type === 'physical'
+                  ? 'bg-blue-100'
+                  : event.type === 'virtual'
+                  ? 'bg-purple-100'
+                  : 'bg-green-100'
+              }`}
+            >
+              <Text
+                className={`text-xs font-inter-medium ${
+                  event.type === 'physical'
+                    ? 'text-blue-800'
+                    : event.type === 'virtual'
+                    ? 'text-purple-800'
+                    : 'text-green-800'
+                }`}
+              >
                 {event.type}
               </Text>
             </View>

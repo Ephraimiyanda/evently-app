@@ -27,14 +27,12 @@ interface AddExpenseModalProps {
   visible: boolean;
   onClose: () => void;
   onSubmit: (expenseData: Omit<Expense, 'id'>) => void;
-  eventId: string;
 }
 
 export function AddExpenseModal({
   visible,
   onClose,
   onSubmit,
-  eventId,
 }: AddExpenseModalProps) {
   const [formData, setFormData] = useState({
     title: '',
@@ -46,6 +44,7 @@ export function AddExpenseModal({
     notes: '',
     eventId: '',
   });
+  console.log(formData);
   const [mode, setMode] = useState<any>('date');
   const [show, setShow] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -72,7 +71,7 @@ export function AddExpenseModal({
     if (validateForm()) {
       onSubmit({
         ...formData,
-        eventId,
+        eventId: formData.eventId,
         amount: unformatAmount,
         vendor: formData.vendor || undefined,
         notes: formData.notes || undefined,
