@@ -19,12 +19,14 @@ interface AddGuestModalProps {
   visible: boolean;
   onClose: () => void;
   onSubmit: (guestData: Omit<Guest, 'id' | 'invitedAt'>) => void;
+  _id?: string;
 }
 
 export function AddGuestModal({
   visible,
   onClose,
   onSubmit,
+  _id,
 }: AddGuestModalProps) {
   const [formData, setFormData] = useState({
     name: '',
@@ -33,7 +35,7 @@ export function AddGuestModal({
     category: 'general' as Guest['category'],
     rsvpStatus: 'pending' as Guest['rsvpStatus'],
     notes: '',
-    eventId: '',
+    eventId: _id ?? '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -126,37 +128,40 @@ export function AddGuestModal({
             showsVerticalScrollIndicator={false}
           >
             <View className="space-y-6">
-              <View>
-                <Text className="text-base font-inter-semibold text-gray-900 mb-2">
-                  Select Event *
-                </Text>
-                <View className="bg-white border border-gray-200 rounded-lg h-[48px]">
-                  <Picker
-                    selectedValue={formData.eventId}
-                    onValueChange={(itemValue, itemIndex) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        eventId: itemValue,
-                      }));
-                    }}
-                    mode="dropdown"
-                    itemStyle={{
-                      color: '#111827',
-                    }}
-                  >
-                    {events.map((event) => (
-                      <Picker.Item
-                        key={event.id}
-                        value={event.id}
-                        label={event.name}
-                        style={{
-                          color: '#111827',
-                        }}
-                      ></Picker.Item>
-                    ))}
-                  </Picker>
+              {!_id && (
+                <View>
+                  <Text className="text-base font-inter-semibold text-gray-900 mb-2">
+                    Select Event *
+                  </Text>
+
+                  <View className="bg-white border border-gray-200 rounded-lg h-[48px]">
+                    <Picker
+                      selectedValue={formData.eventId}
+                      onValueChange={(itemValue, itemIndex) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          eventId: itemValue,
+                        }));
+                      }}
+                      mode="dropdown"
+                      itemStyle={{
+                        color: '#111827',
+                      }}
+                    >
+                      {events.map((event) => (
+                        <Picker.Item
+                          key={event.id}
+                          value={event.id}
+                          label={event.name}
+                          style={{
+                            color: '#111827',
+                          }}
+                        ></Picker.Item>
+                      ))}
+                    </Picker>
+                  </View>
                 </View>
-              </View>
+              )}
               {errors.eventId && (
                 <Text className="text-error-600 font-inter text-sm mt-1">
                   {errors.eventId}

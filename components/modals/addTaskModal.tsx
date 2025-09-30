@@ -20,12 +20,14 @@ interface AddTaskModalProps {
   visible: boolean;
   onClose: () => void;
   onSubmit: (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  _id?: string;
 }
 
 export function AddTaskModal({
   visible,
   onClose,
   onSubmit,
+  _id,
 }: AddTaskModalProps) {
   const [formData, setFormData] = useState({
     title: '',
@@ -35,7 +37,7 @@ export function AddTaskModal({
     status: 'todo' as Task['status'],
     priority: 'medium' as Task['priority'],
     category: '',
-    eventId: '',
+    eventId: _id ?? '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -151,45 +153,47 @@ export function AddTaskModal({
             showsVerticalScrollIndicator={false}
           >
             <View className="space-y-6">
-              <View>
-                <Text className="text-base font-inter-semibold text-gray-900 mb-2">
-                  Select Event *
-                </Text>
-                <View className="space-y-2">
-                  <View className="bg-white border border-gray-200 rounded-lg h-[48px]">
-                    <Picker
-                      // @ts-ignore
-                      selectedValue={formData.eventId}
-                      onValueChange={(itemValue, itemIndex) => {
-                        setFormData((prev) => ({
-                          ...prev,
-                          eventId: itemValue,
-                        }));
-                      }}
-                      mode="dropdown"
-                      itemStyle={{
-                        color: '#111827',
-                      }}
-                    >
-                      {events.map((event) => (
-                        <Picker.Item
-                          key={event.id}
-                          value={event.id}
-                          label={event.name}
-                          style={{
-                            color: '#111827',
-                          }}
-                        ></Picker.Item>
-                      ))}
-                    </Picker>
-                  </View>
-                </View>
-                {errors.eventId && (
-                  <Text className="text-error-600 font-inter text-sm mt-1">
-                    {errors.eventId}
+              {!_id && (
+                <View>
+                  <Text className="text-base font-inter-semibold text-gray-900 mb-2">
+                    Select Event *
                   </Text>
-                )}
-              </View>
+                  <View className="space-y-2">
+                    <View className="bg-white border border-gray-200 rounded-lg h-[48px] pt-0">
+                      <Picker
+                        // @ts-ignore
+                        selectedValue={formData.eventId}
+                        onValueChange={(itemValue, itemIndex) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            eventId: itemValue,
+                          }));
+                        }}
+                        mode="dropdown"
+                        itemStyle={{
+                          color: '#111827',
+                        }}
+                      >
+                        {events.map((event) => (
+                          <Picker.Item
+                            key={event.id}
+                            value={event.id}
+                            label={event.name}
+                            style={{
+                              color: '#111827',
+                            }}
+                          ></Picker.Item>
+                        ))}
+                      </Picker>
+                    </View>
+                  </View>
+                  {errors.eventId && (
+                    <Text className="text-error-600 font-inter text-sm mt-1">
+                      {errors.eventId}
+                    </Text>
+                  )}
+                </View>
+              )}
 
               {/* Task Title */}
               <View>

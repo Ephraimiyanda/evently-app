@@ -17,6 +17,8 @@ import { useProfile } from '@/hooks/useProfile';
 import { View, Text, Image, TouchableOpacity, StatusBar } from 'react-native';
 import { SearchModalContextProvider } from '@/contexts/searchModalContext';
 import * as SplashScreen from 'expo-splash-screen';
+import { router } from 'expo-router';
+import * as NavigationBar from 'expo-navigation-bar';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,6 +37,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
+      NavigationBar.setStyle('light');
     }
   }, [fontsLoaded, fontError]);
 
@@ -48,16 +51,13 @@ export default function RootLayout() {
     };
 
     const handleEditProfile = () => {
-      // router.push('/edit-profile');
-    };
-
-    const handleSettings = () => {
-      // router.push('/(tabs)/settings');
+      router.push('/edit-profile');
     };
 
     const handleSupport = () => {
-      // router.push('/(tabs)/support');
+      router.push('/contact-support');
     };
+
     return (
       <DrawerContentScrollView {...props}>
         <View className="flex-row items-center mt-4 mb-10">
@@ -97,14 +97,14 @@ export default function RootLayout() {
             return <User {...props} size={20} color="#6b7280" />;
           }}
         />
-        <DrawerItem
+        {/* <DrawerItem
           labelStyle={{ fontSize: 16 }}
           onPress={handleSettings}
           label={'Settings'}
           icon={(props) => {
             return <Settings {...props} size={20} color="#6b7280" />;
           }}
-        />
+        /> */}
 
         <DrawerItem
           labelStyle={{ fontSize: 16 }}
@@ -136,6 +136,9 @@ export default function RootLayout() {
             drawerContent={(props) => <CustomDrawerContent {...props} />}
           >
             <Drawer.Screen name="(tabs)" />
+            <Drawer.Screen name="edit-profile" />
+            <Drawer.Screen name="contact-support" />
+            <Drawer.Screen name="all-expenses" />
             <Drawer.Screen name="event-details" />
             <Drawer.Screen name="+not-found" />
           </Drawer>

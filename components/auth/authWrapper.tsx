@@ -76,61 +76,62 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
                 {isSignUp ? 'Create your account' : 'Welcome back'}
               </Text>
             </View>
+            <KeyboardAvoidingView>
+              <View className="gap-4">
+                <View className="flex-row items-center bg-white border border-gray-200 rounded-xl px-4 py-3">
+                  <Mail size={20} color="#6b7280" className="mr-3" />
+                  <StyledTextInput
+                    className="flex-1 text-base text-gray-900"
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
 
-            <View className="gap-4">
-              <View className="flex-row items-center bg-white border border-gray-200 rounded-xl px-4 py-3">
-                <Mail size={20} color="#6b7280" className="mr-3" />
-                <StyledTextInput
-                  className="flex-1 text-base text-gray-900"
-                  placeholder="Email"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
+                <View className="flex-row items-center bg-white border border-gray-200 rounded-xl px-4 py-3">
+                  <Lock size={20} color="#6b7280" className="mr-3" />
+                  <StyledTextInput
+                    className="flex-1 text-base text-gray-900"
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
+
+                <TouchableOpacity
+                  className={`bg-sky-500 rounded-xl py-4 items-center mt-2 ${
+                    authLoading ? 'opacity-60' : ''
+                  }`}
+                  onPress={handleAuth}
+                  disabled={authLoading}
+                >
+                  <Text className="text-white text-base font-semibold">
+                    {authLoading
+                      ? 'Loading...'
+                      : isSignUp
+                      ? 'Sign Up'
+                      : 'Sign In'}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  className="items-center mt-4"
+                  onPress={() => setIsSignUp(!isSignUp)}
+                >
+                  <Text className="text-sky-500 text-sm">
+                    {isSignUp
+                      ? 'Already have an account? Sign In'
+                      : "Don't have an account? Sign Up"}
+                  </Text>
+                </TouchableOpacity>
               </View>
-
-              <View className="flex-row items-center bg-white border border-gray-200 rounded-xl px-4 py-3">
-                <Lock size={20} color="#6b7280" className="mr-3" />
-                <StyledTextInput
-                  className="flex-1 text-base text-gray-900"
-                  placeholder="Password"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-              </View>
-
-              <TouchableOpacity
-                className={`bg-sky-500 rounded-xl py-4 items-center mt-2 ${
-                  authLoading ? 'opacity-60' : ''
-                }`}
-                onPress={handleAuth}
-                disabled={authLoading}
-              >
-                <Text className="text-white text-base font-semibold">
-                  {authLoading
-                    ? 'Loading...'
-                    : isSignUp
-                    ? 'Sign Up'
-                    : 'Sign In'}
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                className="items-center mt-4"
-                onPress={() => setIsSignUp(!isSignUp)}
-              >
-                <Text className="text-sky-500 text-sm">
-                  {isSignUp
-                    ? 'Already have an account? Sign In'
-                    : "Don't have an account? Sign Up"}
-                </Text>
-              </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>

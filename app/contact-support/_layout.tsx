@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
@@ -11,11 +11,13 @@ import {
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
+import { ArrowLeft } from 'lucide-react-native';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function EventDetailsLayout() {
+export default function ContactSupportLayout() {
   useFrameworkReady();
 
   const [fontsLoaded, fontError] = useFonts({
@@ -38,10 +40,16 @@ export default function EventDetailsLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="[id]"
-        getId={({ params }) => params?.id}
-        key={Date.now()}
-        options={{ headerShown: false }}
+        name="index"
+        options={{
+          title: 'Contact Support',
+          headerTitleAlign: 'center',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <ArrowLeft size={24} color="#6b7280" />
+            </TouchableOpacity>
+          ),
+        }}
       />
     </Stack>
   );

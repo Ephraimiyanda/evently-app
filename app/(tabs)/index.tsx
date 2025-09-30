@@ -140,7 +140,7 @@ export default function HomeScreen() {
                   {filter.label}
                 </Text>
               </TouchableOpacity>
-            ))}
+            ))}   
           </ScrollView>
 
           {eventsLoading ? (

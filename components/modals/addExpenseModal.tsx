@@ -27,12 +27,14 @@ interface AddExpenseModalProps {
   visible: boolean;
   onClose: () => void;
   onSubmit: (expenseData: Omit<Expense, 'id'>) => void;
+  _id?: string;
 }
 
 export function AddExpenseModal({
   visible,
   onClose,
   onSubmit,
+  _id,
 }: AddExpenseModalProps) {
   const [formData, setFormData] = useState({
     title: '',
@@ -42,9 +44,8 @@ export function AddExpenseModal({
     date: '',
     status: 'pending' as Expense['status'],
     notes: '',
-    eventId: '',
+    eventId: _id ?? '',
   });
-  console.log(formData);
   const [mode, setMode] = useState<any>('date');
   const [show, setShow] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -161,37 +162,39 @@ export function AddExpenseModal({
             showsVerticalScrollIndicator={false}
           >
             <View className="space-y-6">
-              <View>
-                <Text className="text-base font-inter-semibold text-gray-900 mb-2">
-                  Select Event *
-                </Text>
-                <View className="bg-white border border-gray-200 rounded-lg h-[48px]">
-                  <Picker
-                    selectedValue={formData.eventId}
-                    onValueChange={(itemValue, itemIndex) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        eventId: itemValue,
-                      }));
-                    }}
-                    mode="dropdown"
-                    itemStyle={{
-                      color: '#111827',
-                    }}
-                  >
-                    {events.map((event) => (
-                      <Picker.Item
-                        key={event.id}
-                        value={event.id}
-                        label={event.name}
-                        style={{
-                          color: '#111827',
-                        }}
-                      ></Picker.Item>
-                    ))}
-                  </Picker>
+              {!_id && (
+                <View>
+                  <Text className="text-base font-inter-semibold text-gray-900 mb-2">
+                    Select Event *
+                  </Text>
+                  <View className="bg-white border border-gray-200 rounded-lg h-[48px]">
+                    <Picker
+                      selectedValue={formData.eventId}
+                      onValueChange={(itemValue, itemIndex) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          eventId: itemValue,
+                        }));
+                      }}
+                      mode="dropdown"
+                      itemStyle={{
+                        color: '#111827',
+                      }}
+                    >
+                      {events.map((event) => (
+                        <Picker.Item
+                          key={event.id}
+                          value={event.id}
+                          label={event.name}
+                          style={{
+                            color: '#111827',
+                          }}
+                        ></Picker.Item>
+                      ))}
+                    </Picker>
+                  </View>
                 </View>
-              </View>
+              )}
               {errors.eventId && (
                 <Text className="text-error-600 font-inter text-sm mt-1">
                   {errors.eventId}

@@ -17,11 +17,15 @@ import { InlineLoadingSpinner } from '@/components/loaders/loadingSpinner';
 import { Guest } from '@/types';
 import { AddGuestModal } from '@/components/modals/addGuestModal';
 import { SearchModalContext } from '@/contexts/searchModalContext';
+import { ConfirmationModal } from '@/components/modals/confirmationModal';
 
 export default function GuestsScreen() {
-  const { guests, loading, createGuest, refetch } = useGuests();
+  const { guests, loading, createGuest, refetch, deleteGuest, sendInvitation } =
+    useGuests();
   const [refreshing, setRefreshing] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
+  const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
   const insets = useSafeAreaInsets();
   const { OnClose, searchModalVisible } = useContext(SearchModalContext);
 
@@ -41,13 +45,32 @@ export default function GuestsScreen() {
     }
   };
 
-  const handleGuestPress = (guest: Guest) => {
-    console.log('Guest pressed:', guest.name);
+  const handleGuestDelete = (guest: Guest) => {
+    setSelectedGuest(guest);
+    setDeleteConfirmVisible(true);
   };
 
+  const confirmGuestDelete = async () => {
+    if (selectedGuest) {
+      try {
+        await deleteGuest(selectedGuest.id);
+      } catch (error) {
+        console.error('Failed to delete guest:', error);
+      }
+    }
+  };
+
+  const handleSendInvite = async (guestId: string) => {
+    try {
+      await sendInvitation(guestId, 'email');
+      // Show success message
+      console.log('Invitation sent successfully');
+    } catch (error) {
+      console.error('Failed to send invitation:', error);
+    }
+  };
   const handleSearchItemPress = (item: Guest) => {
     OnClose();
-    handleGuestPress(item);
   };
 
   const getRsvpStats = () => {
@@ -103,22 +126,6 @@ export default function GuestsScreen() {
           </View>
         </View>
 
-        {/* Quick Actions */}
-        <View className="flex-row mx-4 mt-4 space-x-2">
-          <TouchableOpacity className="flex-1 bg-primary-500 rounded-lg py-3 flex-row items-center justify-center">
-            <Mail size={16} color="white" />
-            <Text className="text-white font-inter-semibold ml-2">
-              Send Invites
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="flex-1 bg-secondary-500 rounded-lg py-3 flex-row items-center justify-center">
-            <MessageSquare size={16} color="white" />
-            <Text className="text-white font-inter-semibold ml-2">
-              Send SMS
-            </Text>
-          </TouchableOpacity>
-        </View>
-
         {/* Guests List */}
         <ScrollView
           className="flex-1 px-4 pt-4"
@@ -143,7 +150,8 @@ export default function GuestsScreen() {
               <GuestCard
                 key={guest.id}
                 guest={guest}
-                onPress={() => handleGuestPress(guest)}
+                onDelete={() => handleGuestDelete(guest)}
+                onSendInvite={handleSendInvite}
               />
             ))
           )}
@@ -165,6 +173,15 @@ export default function GuestsScreen() {
           type="guests"
           data={guests}
           onItemPress={handleSearchItemPress}
+        />
+        <ConfirmationModal
+          visible={deleteConfirmVisible}
+          onClose={() => setDeleteConfirmVisible(false)}
+          onConfirm={confirmGuestDelete}
+          title="Delete Guest"
+          message={`Are you sure you want to delete "${selectedGuest?.name}"? This action cannot be undone.`}
+          confirmText="Delete"
+          confirmColor="bg-error-500"
         />
       </View>
     </View>

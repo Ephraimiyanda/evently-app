@@ -16,7 +16,7 @@ import {
   ProfileButton,
   SearchButton,
 } from '@/components/buttons/headerButtons';
-
+import React from 'react';
 export default function TabLayout() {
   const nav = useNavigation();
   const { OnOpen } = useContext(SearchModalContext);
@@ -29,6 +29,7 @@ export default function TabLayout() {
 
         tabBarActiveTintColor: '#0ea5e9',
         tabBarInactiveTintColor: '#64748b',
+        //@ts-ignore
         tabBarButton: (props) => <Pressable {...props} android_ripple={null} />,
         tabBarStyle: {
           backgroundColor: '#ffffff',
@@ -72,7 +73,6 @@ export default function TabLayout() {
               className="flex flex-row  justify-around items-center "
             >
               <SearchButton onPress={OnOpen} />
-              <FilterButton></FilterButton>
             </View>
           ),
           headerLeftContainerStyle: { paddingLeft: 16 },
@@ -93,7 +93,6 @@ export default function TabLayout() {
               className="flex flex-row  justify-around items-center "
             >
               <SearchButton onPress={OnOpen} />
-              <FilterButton></FilterButton>
             </View>
           ),
           headerLeftContainerStyle: { paddingLeft: 16 },
@@ -116,7 +115,6 @@ export default function TabLayout() {
               className="flex flex-row  justify-around items-center "
             >
               <SearchButton onPress={OnOpen} />
-              <FilterButton></FilterButton>
             </View>
           ),
           headerLeftContainerStyle: { paddingLeft: 16 },

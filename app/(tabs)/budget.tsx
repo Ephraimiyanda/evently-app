@@ -24,6 +24,7 @@ import { InlineLoadingSpinner } from '@/components/loaders/loadingSpinner';
 import { Expense } from '@/types';
 import { AddExpenseModal } from '@/components/modals/addExpenseModal';
 import { SearchModalContext } from '@/contexts/searchModalContext';
+import { router } from 'expo-router';
 
 export default function BudgetScreen() {
   const { expenses, loading, createExpense, refetch } = useBudget();
@@ -174,7 +175,9 @@ export default function BudgetScreen() {
               Recent Expenses
             </Text>
             <TouchableOpacity
-            // onPress={() => router.push('/(tabs)/all-expenses')}
+              onPress={() => {
+                router.push('/all-expenses');
+              }}
             >
               <Text className="text-primary-500 font-inter-medium">
                 View All
@@ -195,13 +198,15 @@ export default function BudgetScreen() {
               </Text>
             </View>
           ) : (
-            recentExpenses.map((expense) => (
-              <ExpenseCard
-                key={expense.id}
-                expense={expense}
-                onPress={() => handleExpensePress(expense)}
-              />
-            ))
+            recentExpenses
+              .slice(0, 3)
+              .map((expense) => (
+                <ExpenseCard
+                  key={expense.id}
+                  expense={expense}
+                  onPress={() => handleExpensePress(expense)}
+                />
+              ))
           )}
         </View>
       </ScrollView>

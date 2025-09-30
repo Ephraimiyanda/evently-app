@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useState } from 'react';
-
+import React from 'react';
 export const SearchModalContext = createContext<any>(undefined);
 export const SearchModalContextProvider = ({
   children,
